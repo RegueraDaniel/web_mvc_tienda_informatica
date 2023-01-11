@@ -1,0 +1,24 @@
+<%@page import="org.iesvegademijas.model.Usuario"%>
+<nav class="menu">
+
+		<a href="http://localhost:8080/tienda_informatica">HOME</a>
+		<a href="http://localhost:8080/tienda_informatica/fabricantes">Frabricantes</a>
+		<a href="http://localhost:8080/tienda_informatica/productos">Producto</a>
+		<a href="http://localhost:8080/tienda_informatica/usuarios">Usuario</a>
+		
+		<div class="menu-log">
+		
+			<% 	Usuario usuLogin = (Usuario)request.getSession().getAttribute("usuario-logado");
+			
+				if (usuLogin == null) {
+			%>
+				<a href="http://localhost:8080/tienda_informatica/usuarios/login">LOGIN</a>
+			<% 	}else{%>
+				<div style="display: inline;">Bienvenido, <%= usuLogin.getUsuario()%> [<%= usuLogin.getRol()%>]  </div>
+				<form action="http://localhost:8080/tienda_informatica/usuarios/logout" method="post" style="display: inline;">
+					<input type="submit" value="LOGOUT" />
+				</form>	
+			<% 	}%>	
+		</div>
+		
+	</nav>

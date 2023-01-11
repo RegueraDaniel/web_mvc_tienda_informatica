@@ -1,9 +1,11 @@
 package org.iesvegademijas.model;
 
+
 public class Fabricante {
 
 	private int codigo;
 	private String nombre;
+	
 
 	public String getNombre() {
 		return nombre;

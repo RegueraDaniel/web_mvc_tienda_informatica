@@ -14,4 +14,22 @@
 		<url-pattern>/fabricantes/*</url-pattern>
 	</servlet-mapping>
   
+  	<servlet>
+		<servlet-name>ProductoServlet</servlet-name>
+		<servlet-class>org.iesvegademijas.servlet.ProductosServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ProductoServlet</servlet-name>
+		<url-pattern>/productos/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>UsuarioServlet</servlet-name>
+		<servlet-class>org.iesvegademijas.servlet.UsuariosServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UsuarioServlet</servlet-name>
+		<url-pattern>/usuarios/*</url-pattern>
+	</servlet-mapping>
+	
 </web-app>

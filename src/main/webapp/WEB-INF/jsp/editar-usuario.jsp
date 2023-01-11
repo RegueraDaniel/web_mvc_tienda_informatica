@@ -1,12 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@page import="org.iesvegademijas.model.Fabricante"%>
+<%@page import="org.iesvegademijas.model.Usuario"%>
 <%@page import="java.util.Optional"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Detalle Fabricante</title>
+<title>Detalle Usuario</title>
 <%@ include file="/WEB-INF/jsp/head.jspf" %>
 </head>
 <body>
@@ -14,11 +14,11 @@
 	<%@ include file="/WEB-INF/jsp/nav.jspf" %>
 	<main>
 <div id="contenedora" style="float:none; margin: 0 auto;width: 900px;" >
-	<form action="/tienda_informatica/fabricantes/editar/" method="post" >
+	<form action="/tienda_informatica/usuarios/editar/" method="post" >
 		<input type="hidden" name="__method__" value="put" />
 		<div class="clearfix">
 			<div style="float: left; width: 50%">
-				<h1>Editar Fabricante</h1>
+				<h1>Editar Usuario</h1>
 			</div>
 			<div style="float: none;width: auto;overflow: hidden;min-height: 80px;position: relative;">
 				
@@ -33,36 +33,58 @@
 			<hr/>
 		</div>
 		
-		<% 	Optional<Fabricante> optFab = (Optional<Fabricante>)request.getAttribute("fabricante");
-			if (optFab.isPresent()) {
+		<% 	Optional<Usuario> optUser = (Optional<Usuario>)request.getAttribute("usuario");
+			if (optUser.isPresent()) {
 		%>
 		
 		<div style="margin-top: 6px;" class="clearfix">
 			<div style="float: left;width: 50%">
-				<label>Código</label>
+				<label>Id</label>
 			</div>
 			<div style="float: none;width: auto;overflow: hidden;">
-				<input name="codigo" value="<%= optFab.get().getCodigo() %>" readonly="readonly"/>
+				<input name="id" value="<%= optUser.get().getId() %>" readonly="readonly"/>
 			</div> 
 		</div>
 		
 		<div style="margin-top: 6px;" class="clearfix">
 			<div style="float: left;width: 50%">
-				<label>Nombre</label>
+				<label>Nombre de usuario</label>
 			</div>
 			<div style="float: none;width: auto;overflow: hidden;">
-				<input name="nombre" value="<%= optFab.get().getNombre() %>"/>
+				<input name="usuario" value="<%= optUser.get().getUsuario() %>"/>
 			</div> 
 		</div>
 		
+		<input type="hidden" name="password" value="<%= optUser.get().getPassword() %>" />
+		
+		<div style="margin-top: 6px;" class="clearfix">
+			<div style="float: left;width: 50%">
+				<label>Rol</label>
+			</div>
+			<div style="float: none;width: auto;overflow: hidden;">
+				<select name="rol" style="float: none;width: auto;overflow: hidden;">
+					<% 
+				       String[] roles = (String[])request.getAttribute("roles");
+				            
+				            for (String rol : roles) {
+				    %>
+				  <option value="<%= rol%>"><%= rol%></option>
+				  <% 
+	            }
+				            %>
+				</select>
+			</div> 
+		</div>
+		
+		
 		<% 	} else { %>
 			
-				request.sendRedirect("fabricantes/");
+				request.sendRedirect("usuarioss/");
 		
 		<% 	} %>
 	</form>
 </div>
-</main>
+	</main>
 	<%@ include file="/WEB-INF/jsp/footer.jspf" %>
 </body>
 </html>

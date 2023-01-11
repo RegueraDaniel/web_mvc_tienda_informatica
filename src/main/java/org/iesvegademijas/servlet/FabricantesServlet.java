@@ -2,6 +2,10 @@ package org.iesvegademijas.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import java.util.Comparator;
+
+import static java.util.stream.Collectors.*;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -9,6 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.iesvegademijas.dto.FabricanteDTO;
+import org.eclipse.jdt.internal.compiler.util.Sorting;
 import org.iesvegademijas.dao.FabricanteDAO;
 import org.iesvegademijas.dao.FabricanteDAOImpl;
 import org.iesvegademijas.model.Fabricante;
@@ -32,17 +38,80 @@ public class FabricantesServlet extends HttpServlet {
 		RequestDispatcher dispatcher;
 				
 		String pathInfo = request.getPathInfo(); //
+		System.out.println(pathInfo);
+		
+		FabricanteDAO fabDAO = new FabricanteDAOImpl();
+		//String 
+		if (pathInfo == null || "/".equals(pathInfo)){
 			
-		if (pathInfo == null || "/".equals(pathInfo)) {
+			String riques = request.getQueryString();
+			
+			
+			if(riques != null) {
+				
+			String ordenarPor = request.getParameter("ordenar-por");
+			String modoOrdenar = request.getParameter("modo-ordenar");
+			var lfdto = fabDAO.getAllDTOPlusCountProductosPlusOrdered(ordenarPor, modoOrdenar);
+			request.setAttribute("listaFabricantes", lfdto);				
+			dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/fabricantes.jsp");
+			
+		/*if (riques != null){
+			
+			String ordenarPor = request.getParameter("ordenar-por");
+			String modoOrdenar = request.getParameter("modo-ordenar");
+			
 			FabricanteDAO fabDAO = new FabricanteDAOImpl();
 			
-			//GET 
-			//	/fabricantes/
-			//	/fabricantes
+			var lfdto = fabDAO.getAllDTOPlusCountProductos();
 			
-			request.setAttribute("listaFabricantes", fabDAO.getAll());		
-			dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/fabricantes.jsp");
-			        		       
+			
+			if(ordenarPor.equals("codigo")) {
+				if(modoOrdenar.equals("asc")){
+					request.setAttribute("listaFabricantes", lfdto);				
+					dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/fabricantes.jsp");
+				}else {
+					var listaOrdenada = lfdto.stream().sorted((f1, f2) -> f2.getCodigo() - f1.getCodigo()).collect(toList());
+					request.setAttribute("listaFabricantes", listaOrdenada);
+					dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/fabricantes.jsp");
+				}
+				
+			}else{//nombre
+				if(modoOrdenar.equals("asc")){
+					var listaOrdenada = lfdto.stream()
+							.sorted((f1, f2) -> f1.getNombre().compareToIgnoreCase(f2.getNombre()) )
+							.collect(toList());
+					request.setAttribute("listaFabricantes", listaOrdenada);
+					dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/fabricantes.jsp");
+				}else {
+					var listaOrdenada = lfdto.stream()
+							.sorted((f1, f2) -> f2.getNombre().compareToIgnoreCase(f1.getNombre()) )
+							.collect(toList());
+					request.setAttribute("listaFabricantes", listaOrdenada);
+					dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/fabricantes.jsp");
+				}
+			}	
+			*/
+			
+			} else {
+				
+				//GET 
+				//	/fabricantes/
+				//	/fabricantes
+				//	/fabricantes?...
+				/*
+				List<Fabricante> lf = fabDAO.getAll();
+				var lfdto = lf.stream()
+								.map(f -> {
+									FabricanteDTO fdto = new FabricanteDTO(f);
+									fdto.setNumeroProductos(fabDAO.getCountProductos(f.getCodigo()));
+									return fdto;
+								})
+								.collect(toList());*/
+				
+				var lfdto = fabDAO.getAllDTOPlusCountProductos();
+				request.setAttribute("listaFabricantes", lfdto);				
+				dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/fabricantes.jsp");
+			}
 		} else {
 			// GET
 			// 		/fabricantes/{id}
@@ -63,7 +132,6 @@ public class FabricantesServlet extends HttpServlet {
         												
 			
 			} else if (pathParts.length == 2) {
-				FabricanteDAO fabDAO = new FabricanteDAOImpl();
 				// GET
 				// /fabricantes/{id}
 				try {
@@ -76,7 +144,6 @@ public class FabricantesServlet extends HttpServlet {
 				}
 				
 			} else if (pathParts.length == 3 && "editar".equals(pathParts[1]) ) {
-				FabricanteDAO fabDAO = new FabricanteDAOImpl();
 				
 				// GET
 				// /fabricantes/edit/{id}
@@ -98,7 +165,7 @@ public class FabricantesServlet extends HttpServlet {
 			}
 			
 		}
-		
+			
 		dispatcher.forward(request, response);
 			 
 	}

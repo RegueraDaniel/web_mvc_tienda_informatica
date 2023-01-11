@@ -7,17 +7,12 @@
 <head>
 <meta charset="UTF-8">
 <title>Detalle Fabricante</title>
-<style>
-.clearfix::after {
-	content: "";
-	display: block;
-	clear: both;
-}
-
-</style>
+<%@ include file="/WEB-INF/jsp/head.jspf" %>
 </head>
 <body>
-
+<%@ include file="/WEB-INF/jsp/header.jspf" %>
+	<%@ include file="/WEB-INF/jsp/nav.jspf" %>
+	<main>
 <div id="contenedora" style="float:none; margin: 0 auto;width: 900px;" >
 	<form action="/tienda_informatica/fabricantes/crear/" method="post">
 		<div class="clearfix">
@@ -48,6 +43,7 @@
 
 	</form>
 </div>
-
+</main>
+	<%@ include file="/WEB-INF/jsp/footer.jspf" %>
 </body>
 </html>

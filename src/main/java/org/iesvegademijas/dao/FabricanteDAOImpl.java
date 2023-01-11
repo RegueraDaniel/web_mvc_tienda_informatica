@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.iesvegademijas.dto.FabricanteDTO;
 import org.iesvegademijas.model.Fabricante;
+import org.iesvegademijas.model.Producto;
 
 public class FabricanteDAOImpl extends AbstractDAOImpl implements FabricanteDAO{
 
@@ -79,6 +81,7 @@ public class FabricanteDAOImpl extends AbstractDAOImpl implements FabricanteDAO{
             	int idx = 1;
             	fab.setCodigo(rs.getInt(idx++));
             	fab.setNombre(rs.getString(idx));
+            	//fab.setNumeroProductos(getCountProductos(fab.getCodigo()));
             	listFab.add(fab);
             }
           
@@ -117,8 +120,8 @@ public class FabricanteDAOImpl extends AbstractDAOImpl implements FabricanteDAO{
         		Fabricante fab = new Fabricante();
         		idx = 1;
         		fab.setCodigo(rs.getInt(idx++));
-        		fab.setNombre(rs.getString(idx));
-        		
+        		fab.setNombre(rs.getString(idx++));
+        		//fab.setNumeroProductos(getCountProductos(fab.getCodigo()));
         		return Optional.of(fab);
         	}
         	
@@ -197,5 +200,117 @@ public class FabricanteDAOImpl extends AbstractDAOImpl implements FabricanteDAO{
         }
 		
 	}
+
+	@Override
+	public Optional<Integer> getCountProductos(int id) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+        	conn = connectDB();
+        	
+        	ps = conn.prepareStatement("SELECT COUNT(codigo_fabricante) FROM producto WHERE codigo_fabricante = ?");
+        	
+        	int idx = 1;
+        	ps.setInt(idx, id);
+        	
+        	rs = ps.executeQuery();
+        	int contador = 0;
+        	if (rs.next()) {
+        		contador = rs.getInt(idx++);	
+        		return Optional.of(contador);
+        	}
+        	
+        } catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+            closeDb(conn, ps, rs);
+        }
+        
+        return Optional.empty();
+	}
+	
+	
+	/**
+	 * Devuelve lista con todos loa fabricantes con sus productos.
+	 */
+	@Override
+	public List<FabricanteDTO> getAllDTOPlusCountProductos() {
+		
+		Connection conn = null;
+		Statement s = null;
+        ResultSet rs = null;
+        
+        List<FabricanteDTO> listFab = new ArrayList<>(); 
+        
+        try {
+        	conn = connectDB();
+
+        	// Se utiliza un objeto Statement dado que no hay parámetros en la consulta.
+        	s = conn.createStatement();
+            		
+        	rs = s.executeQuery("select F.*, count(P.codigo) as numProd from fabricante F left outer join producto P on F.codigo = P.codigo_fabricante group by F.codigo");          
+            while (rs.next()) {
+            	FabricanteDTO fab = new FabricanteDTO(new Fabricante());
+            	int idx = 1;
+            	fab.setCodigo(rs.getInt(idx++));
+            	fab.setNombre(rs.getString(idx++));
+            	fab.setEnteroProductos(rs.getInt(idx));
+            	listFab.add(fab);
+            }
+          
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+            closeDb(conn, s, rs);
+        }
+        return listFab;
+        
+	}
+	
+	/**
+	 * Devuelve lista con todos loa fabricantes con sus productos.
+	 */
+	@Override
+	public List<FabricanteDTO> getAllDTOPlusCountProductosPlusOrdered(String campo, String orden) {
+		
+		Connection conn = null;
+		Statement s = null;
+        ResultSet rs = null;
+        
+        List<FabricanteDTO> listFab = new ArrayList<>(); 
+        
+        try {
+        	conn = connectDB();
+
+        	// Se utiliza un objeto Statement dado que no hay parámetros en la consulta.
+        	s = conn.createStatement();
+            		
+        	rs = s.executeQuery("select F.*, count(P.codigo) as numProd from fabricante F left outer join producto P on F.codigo = P.codigo_fabricante group by F.codigo ORDER BY "+ campo +" "+ orden);          
+            while (rs.next()) {
+            	FabricanteDTO fab = new FabricanteDTO(new Fabricante());
+            	int idx = 1;
+            	fab.setCodigo(rs.getInt(idx++));
+            	fab.setNombre(rs.getString(idx++));
+            	fab.setEnteroProductos(rs.getInt(idx));
+            	listFab.add(fab);
+            }
+          
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+            closeDb(conn, s, rs);
+        }
+        return listFab;
+        
+	}
+	
 
 }

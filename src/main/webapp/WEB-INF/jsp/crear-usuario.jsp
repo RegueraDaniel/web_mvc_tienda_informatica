@@ -1,12 +1,14 @@
+<%@page import="org.apache.jasper.tagplugins.jstl.core.ForEach"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@page import="org.iesvegademijas.model.Fabricante"%>
+<%@page import="org.iesvegademijas.model.Usuario"%>
+<%@page import="java.util.List"%>
 <%@page import="java.util.Optional"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Detalle Fabricante</title>
+<title>Detalle Usuario</title>
 <%@ include file="/WEB-INF/jsp/head.jspf" %>
 </head>
 <body>
@@ -14,16 +16,15 @@
 	<%@ include file="/WEB-INF/jsp/nav.jspf" %>
 	<main>
 <div id="contenedora" style="float:none; margin: 0 auto;width: 900px;" >
-	<form action="/tienda_informatica/fabricantes/editar/" method="post" >
-		<input type="hidden" name="__method__" value="put" />
+	<form action="/tienda_informatica/usuarios/crear/" method="post">
 		<div class="clearfix">
 			<div style="float: left; width: 50%">
-				<h1>Editar Fabricante</h1>
+				<h1>Crear Usuario</h1>
 			</div>
 			<div style="float: none;width: auto;overflow: hidden;min-height: 80px;position: relative;">
 				
-				<div style="position: absolute; left: 39%; top : 39%;">
-							<input type="submit" value="Guardar" />						
+				<div style="position: absolute; left: 39%; top : 39%;">								
+					<input type="submit" value="Crear"/>					
 				</div>
 				
 			</div>
@@ -33,33 +34,51 @@
 			<hr/>
 		</div>
 		
-		<% 	Optional<Fabricante> optFab = (Optional<Fabricante>)request.getAttribute("fabricante");
-			if (optFab.isPresent()) {
-		%>
-		
 		<div style="margin-top: 6px;" class="clearfix">
 			<div style="float: left;width: 50%">
-				<label>Código</label>
+				Nombre de usuario
 			</div>
 			<div style="float: none;width: auto;overflow: hidden;">
-				<input name="codigo" value="<%= optFab.get().getCodigo() %>" readonly="readonly"/>
+				<input name="usuario" />
 			</div> 
 		</div>
 		
 		<div style="margin-top: 6px;" class="clearfix">
 			<div style="float: left;width: 50%">
-				<label>Nombre</label>
+				Contraseña
 			</div>
 			<div style="float: none;width: auto;overflow: hidden;">
-				<input name="nombre" value="<%= optFab.get().getNombre() %>"/>
+				<input name="password" />
 			</div> 
 		</div>
 		
-		<% 	} else { %>
+
+		<div style="margin-top: 6px;" class="clearfix">
+		
+			<div style="float: left;width: 50%">
+				Rol
+			</div>
 			
-				request.sendRedirect("fabricantes/");
+			<select name="rol" style="float: none;width: auto;overflow: hidden;">
+				<% 
+			       String[] roles = (String[])request.getAttribute("roles");
+			            
+			            for (String rol : roles) {
+			    %>
+			  <option value="<%= rol%>"><%= rol%></option>
+			  <% 
+            }
+			            %>
+			</select>
+			
+			
+	         
+		</div>
+
+	
+	
 		
-		<% 	} %>
+
 	</form>
 </div>
 </main>
